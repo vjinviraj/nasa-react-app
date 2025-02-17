@@ -18,33 +18,23 @@ function App() {
   }
 
   useEffect(() => {
+    const NASA_KEY = import.meta.env.VITE_NASA_API_KEY;
+    console.log("NASA API KEY:", NASA_KEY); // Check if the API key is being read
+    const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}`;
+    
     async function fetchAPIData() {
-      const NASA_KEY = import.meta.env.VITE_NASA_API_KEY
-      const url = 'https://api.nasa.gov/planetary/apod' +
-        `?api_key=${NASA_KEY}`
-
-        const today = (new Date()).toDateString()
-        const localKey = `NASA-${today}`
-        if(localStorage.getItem(localKey)) {
-          const apiData = JSON.parse(localStorage.getItem(localKey))
-            setData(apiData)
-            console.log('fetched from cache today')
-            return
-        }
-        localStorage.clear()
-
       try {
-        const res = await fetch(url)
-        const apiData = await res.json()
-        localStorage.setItem(localKey, JSON.stringify(apiData))
-        setData(apiData)
-        console.log('fetched from api today')
+        const res = await fetch(url);
+        const apiData = await res.json();
+        console.log("API Response:", apiData); // Check what response you're getting
+        setData(apiData);
       } catch (err) {
-        console.log(err.message)
+        console.log("Fetch Error:", err.message);
       }
     }
-    fetchAPIData()
-  }, [])
+    fetchAPIData();
+  }, []);
+  
 
   return (
     <>
